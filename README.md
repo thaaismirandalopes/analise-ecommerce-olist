@@ -2,12 +2,13 @@
 
 Estudo de cerca de 100 mil pedidos reais do marketplace Olist (2016 a 2018).
 
-Trabalho com CRM e marketing de ciclo de vida. Por isso olhei a base com perguntas de retenção: quem volta a comprar, quando compra, o que estraga a experiência e com quem vale a pena falar primeiro.
+Trabalho com CRM e marketing de ciclo de vida. Por isso olhei a base com perguntas de retenção: quem volta a comprar, o que estraga a experiência, com quem vale a pena falar primeiro e se dá para prever a recompra.
 
 | Parte | O que responde | Ferramentas |
 |---|---|---|
 | [1. Análise exploratória](notebooks/analise_exploratoria.ipynb) | O que aconteceu com as vendas e os clientes? | Python, Pandas, Matplotlib |
 | [2. Segmentação RFM](sql/README.md) | Com quem vale a pena falar primeiro? | SQL, PostgreSQL |
+| [3. Previsão de recompra](notebooks/previsao_recompra.ipynb) | Dá para prever quem vai voltar? | Python, Scikit-learn |
 
 # Parte 1: análise exploratória
 
@@ -52,6 +53,7 @@ Trabalho com CRM e marketing de ciclo de vida. Por isso olhei a base com pergunt
 ## Limites da análise
 
 - A base é uma amostra e cobre cerca de dois anos. A recompra real pode ser maior em um prazo mais longo.
+- Dos 2.801 clientes com mais de um pedido, 808 só fizeram novos pedidos nas primeiras 24 horas. A recompra em outro dia é de 2,1% (detalhe na Parte 3).
 - A relação entre atraso e nota é uma associação. Os dados não provam causa sozinhos.
 
 ## Como rodar
@@ -74,12 +76,37 @@ Separei os 93.358 clientes em 7 segmentos por recência, frequência e valor, co
 
 ![Receita por segmento](imagens/08_rfm_receita.png)
 
+# Parte 3: previsão de recompra
+
+**[Abrir o notebook completo](notebooks/previsao_recompra.ipynb)**
+
+Treinei um modelo para estimar, depois da primeira compra, a chance de o cliente voltar em até 180 dias.
+
+**O modelo ficou fraco, e essa é a resposta.** Os dados da primeira compra dizem pouco sobre quem volta.
+
+| Medida | Resultado |
+|---|---|
+| Clientes na base do modelo | 55.261 |
+| Taxa de recompra em 180 dias | 1,95% |
+| AUC da regressão logística (0,5 é sorteio) | 0,585 no teste e 0,572 na validação cruzada |
+| Recompra nos 20% com maior chance | 2,90%, ou 1,5 vez a média |
+
+![Recompra por faixa de chance](imagens/09_recompra_por_faixa.png)
+
+O que este projeto mostra:
+
+- **Definição cuidadosa do alvo.** Separei recompra de verdade de carrinho dividido no mesmo dia.
+- **Cuidado com o tempo.** Só entram clientes que tiveram 180 dias para voltar.
+- **Avaliação honesta.** Um modelo que sempre diz "não recompra" acerta 98% e não serve para nada. Por isso usei AUC e a taxa por faixa.
+- **Recomendação de negócio.** Não usar o modelo sozinho. Usar o RFM da Parte 2 e buscar dados de comportamento, como abertura de e-mail e visita ao site.
+
 # Estrutura
 
 ```
 ├── notebooks/analise_exploratoria.ipynb   parte 1, com resultados
+├── notebooks/previsao_recompra.ipynb      parte 3, com resultados
 ├── sql/                                   parte 2: consultas e documentação
-├── imagens/                               gráficos das duas partes
+├── imagens/                               gráficos das três partes
 ├── dados/                                 tabelas (baixadas pelo script)
 ├── baixar_dados.py                        baixa a base pública
 ├── carregar_postgres.py                   cria as tabelas e carrega os dados
@@ -90,7 +117,3 @@ Separei os 93.358 clientes em 7 segmentos por recência, frequência e valor, co
 # Fonte dos dados
 
 [Brazilian E-Commerce Public Dataset by Olist](https://github.com/olist/work-at-olist-data), base pública e anonimizada.
-
-# Próximo passo
-
-- Modelo de previsão de recompra com Scikit-learn.

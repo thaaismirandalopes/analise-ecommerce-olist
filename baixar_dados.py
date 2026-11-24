@@ -12,6 +12,7 @@ ARQUIVOS = [
     "olist_customers_dataset.csv",
     "olist_order_reviews_dataset.csv",
     "olist_products_dataset.csv",
+    "olist_order_payments_dataset.csv",
 ]
 
 os.makedirs(PASTA, exist_ok=True)
@@ -24,4 +25,4 @@ for arquivo in ARQUIVOS:
     print("baixando:", arquivo)
     urllib.request.urlretrieve(ORIGEM + arquivo, destino)
 
-print("Pronto. Agora abra notebooks/analise_exploratoria.ipynb")
+print("Pronto. Os notebooks estão na pasta notebooks/")
