@@ -1,8 +1,15 @@
-# Análise exploratória de um e-commerce brasileiro (Olist)
+# Análise de clientes de um e-commerce brasileiro (Olist)
 
-Análise de cerca de 100 mil pedidos reais do marketplace Olist (2016 a 2018), feita com Python e Pandas.
+Estudo de cerca de 100 mil pedidos reais do marketplace Olist (2016 a 2018).
 
-Trabalho com CRM e marketing de ciclo de vida. Por isso olhei a base com perguntas de retenção: quem volta a comprar, quando compra e o que estraga a experiência.
+Trabalho com CRM e marketing de ciclo de vida. Por isso olhei a base com perguntas de retenção: quem volta a comprar, quando compra, o que estraga a experiência e com quem vale a pena falar primeiro.
+
+| Parte | O que responde | Ferramentas |
+|---|---|---|
+| [1. Análise exploratória](notebooks/analise_exploratoria.ipynb) | O que aconteceu com as vendas e os clientes? | Python, Pandas, Matplotlib |
+| [2. Segmentação RFM](sql/README.md) | Com quem vale a pena falar primeiro? | SQL, PostgreSQL |
+
+# Parte 1: análise exploratória
 
 **[Abrir o notebook completo](notebooks/analise_exploratoria.ipynb)**
 
@@ -55,21 +62,35 @@ python baixar_dados.py
 jupyter notebook notebooks/analise_exploratoria.ipynb
 ```
 
-## Estrutura
+# Parte 2: segmentação RFM em SQL
+
+**[Abrir a documentação completa](sql/README.md)**
+
+Separei os 93.358 clientes em 7 segmentos por recência, frequência e valor, com consultas em PostgreSQL.
+
+- **30% dos clientes geram 57% da receita.** São os dois segmentos de alto valor.
+- **13.888 clientes de alto valor estão em risco.** Compraram uma vez, gastaram bem e estão há 6 a 12 meses sem voltar. É a prioridade 1 de reativação.
+- **Só 1,3% dos clientes são campeões**, com mais de uma compra e ainda ativos.
+
+![Receita por segmento](imagens/08_rfm_receita.png)
+
+# Estrutura
 
 ```
-├── notebooks/analise_exploratoria.ipynb   análise completa, com resultados
-├── imagens/                               gráficos gerados pelo notebook
+├── notebooks/analise_exploratoria.ipynb   parte 1, com resultados
+├── sql/                                   parte 2: consultas e documentação
+├── imagens/                               gráficos das duas partes
 ├── dados/                                 tabelas (baixadas pelo script)
 ├── baixar_dados.py                        baixa a base pública
+├── carregar_postgres.py                   cria as tabelas e carrega os dados
+├── rodar_rfm.py                           roda o RFM e gera os gráficos
 └── requirements.txt                       bibliotecas usadas
 ```
 
-## Fonte dos dados
+# Fonte dos dados
 
 [Brazilian E-Commerce Public Dataset by Olist](https://github.com/olist/work-at-olist-data), base pública e anonimizada.
 
-## Próximos passos
+# Próximo passo
 
-- Segmentação de clientes por RFM em SQL (PostgreSQL).
 - Modelo de previsão de recompra com Scikit-learn.
